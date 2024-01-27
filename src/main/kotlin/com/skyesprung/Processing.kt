@@ -11,6 +11,8 @@ class Processing : PApplet() {
     }
     private val emptyPixel: Int = color(50f)
     override fun setup() {
+        frameRate(500f)
+
         background(emptyPixel)
         noStroke()
         textSize(50f)
@@ -27,33 +29,25 @@ class Processing : PApplet() {
             circle(mouseX.toFloat(), mouseY.toFloat(), 50f)
         else
             wasPressed = false;
-
-        var leftCount = 0;
-        var rightCount = 0;
-        val currentImg = get() // double buffering
-        val nextImg : PImage = currentImg.clone() as PImage
-        nextImg.pixels = currentImg.pixels.clone()
-        for (y in (0 until currentImg.height-1).reversed()){ // traverse pixel rows down stopping 1 short
-            //experiment
-            var xrange = 1 until currentImg.width-1;
-            for(x in (if( random(1f)>0.5f )xrange else xrange.reversed())){ // extremely horrible hack
+        val pixels = get().pixels
+        for (y in (0 until height-1).reversed()){ // traverse pixel rows down stopping 1 short
+            for(x in 1 until width-1){ // extremely horrible hack
                 val direction = when{ // choose flow direction
-                    nextImg.get(x,y+1) == emptyPixel -> 0
-                    nextImg.get(x+1,y+1) == emptyPixel -> 1
-                    nextImg.get(x-1,y+1) == emptyPixel -> -1
+                    pixels[x + (y + 1) * width] == emptyPixel -> 0
+                    pixels[x + 1 + (y + 1) * width] == emptyPixel && pixels[x + 1 + y * width] == emptyPixel -> 1
+                    pixels[x - 1 + (y + 1) * width] == emptyPixel && pixels[x - 1 + y * width] == emptyPixel -> -1
                     else -> continue
                 }
-                if(direction < 0) leftCount++;
-                if(direction > 0) rightCount++;
                 //progress grain
-                nextImg.set(x,y, emptyPixel);
-                nextImg.set(x + direction, y+1, currentImg.get(x,y))
+                val oldCol = pixels[x + y * width]
+                pixels[x + y * width] = emptyPixel
+                pixels[x + direction + (y+1) * width] = oldCol
             }
         }
-        clear()
-        image(nextImg, 0f, 0f)
+        val next = PImage(width,height)
+        next.pixels = pixels
+        image(next, 0f, 0f)
         kotlin.io.println("fps $frameRate.")
-        println("l = $leftCount; r = $rightCount")
     }
 
 }
