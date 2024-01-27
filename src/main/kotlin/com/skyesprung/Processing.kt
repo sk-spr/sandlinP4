@@ -5,7 +5,6 @@ import processing.core.PConstants
 import processing.core.PImage
 
 class Processing : PApplet() {
-
     override fun settings() {
         size(1920/2, 1080/2, PConstants.JAVA2D)
     }
@@ -14,17 +13,17 @@ class Processing : PApplet() {
         frameRate(500f)
         background(emptyPixel)
         noStroke()
-        textSize(50f)
+        textSize(100f)
         text("Click and drag!", 100f, 100f)
     }
-    private var wasPressed : Boolean = false;
+    private var wasPressed = false;
     override fun draw() {
         if(mousePressed && !wasPressed){
             fill(random(150f, 255f), random(150f, 255f), random(150f, 255f))
-            wasPressed = true;
+            wasPressed = true
         }
         if(mousePressed) circle(mouseX.toFloat(), mouseY.toFloat(), 50f)
-        else wasPressed = false;
+        else wasPressed = false
         val pixels = get().pixels
         var y = height-1;
         while(--y > 0){ // traverse pixel rows down stopping 1 short
