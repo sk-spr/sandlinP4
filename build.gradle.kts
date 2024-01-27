@@ -15,7 +15,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("org.example.MainKt")
+    mainClass.set("com.skyesprung.MainKt")
 }
 repositories {
     mavenCentral()
