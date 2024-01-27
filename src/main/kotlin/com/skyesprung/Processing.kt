@@ -12,12 +12,10 @@ class Processing : PApplet() {
     private val emptyPixel: Int = color(50f)
     override fun setup() {
         frameRate(500f)
-
         background(emptyPixel)
         noStroke()
         textSize(50f)
         text("Click and drag!", 100f, 100f)
-        imageMode(CORNER)
     }
     private var wasPressed : Boolean = false;
     override fun draw() {
@@ -25,13 +23,13 @@ class Processing : PApplet() {
             fill(random(150f, 255f), random(150f, 255f), random(150f, 255f))
             wasPressed = true;
         }
-        if(mousePressed)
-            circle(mouseX.toFloat(), mouseY.toFloat(), 50f)
-        else
-            wasPressed = false;
+        if(mousePressed) circle(mouseX.toFloat(), mouseY.toFloat(), 50f)
+        else wasPressed = false;
         val pixels = get().pixels
-        for (y in (0 until height-1).reversed()){ // traverse pixel rows down stopping 1 short
-            for(x in 1 until width-1){ // extremely horrible hack
+        var y = height-1;
+        while(--y > 0){ // traverse pixel rows down stopping 1 short
+            var x = -1;
+            while(++x < width-1){
                 pixels[x + when{ // choose flow direction
                     pixels[x + (y + 1) * width] == emptyPixel -> 0
                     pixels[x + 1 + (y + 1) * width] == emptyPixel && pixels[x + 1 + y * width] == emptyPixel -> 1
