@@ -32,16 +32,13 @@ class Processing : PApplet() {
         val pixels = get().pixels
         for (y in (0 until height-1).reversed()){ // traverse pixel rows down stopping 1 short
             for(x in 1 until width-1){ // extremely horrible hack
-                val direction = when{ // choose flow direction
+                pixels[x + when{ // choose flow direction
                     pixels[x + (y + 1) * width] == emptyPixel -> 0
                     pixels[x + 1 + (y + 1) * width] == emptyPixel && pixels[x + 1 + y * width] == emptyPixel -> 1
                     pixels[x - 1 + (y + 1) * width] == emptyPixel && pixels[x - 1 + y * width] == emptyPixel -> -1
                     else -> continue
-                }
-                //progress grain
-                val oldCol = pixels[x + y * width]
-                pixels[x + y * width] = emptyPixel
-                pixels[x + direction + (y+1) * width] = oldCol
+                } + (y+1) * width] = pixels[x + y * width]
+                pixels[x + y * width] = emptyPixel;
             }
         }
         val next = PImage(width,height)
